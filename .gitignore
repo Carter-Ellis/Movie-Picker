@@ -1,0 +1,21 @@
+*.pyc
+__pycache__/
+db.sqlite3
+.env
+*.sqlite3
+*.log
+
+/staticfiles/
+/media/
+/venv/
+/node_modules/
+
+.DS_Store
+.idea/
+*.swp
+
+# Django migrations
+*/migrations/__pycache__/
+*/migrations/*.pyc
+*/migrations/*.pyo
+*/migrations/*.pyd
