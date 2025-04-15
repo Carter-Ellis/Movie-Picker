@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Movies
+{% endblock %}
+
+{% block content %}
+<section>
+    <h1 class="add-movies-container">Movies</h1>
+    <div class="add-movies-container">
+        <form method="post" class="add-movies-form">  <!-- ⬅️ add this class -->
+            {% csrf_token %}
+            
+            <div class="form-group1">
+                <label for="id_title">Title</label>
+                {{ form.title }}
+            </div>
+        
+            <div class="form-group1">
+                <label for="id_genre">Genre</label>
+                {{ form.genre }}
+            </div>
+        
+            <div class="form-group">
+                <label for="id_year">Year</label>
+                {{ form.year }}
+            </div>
+        
+            <div class="form-group">
+                <label for="id_duration_minutes">Duration (minutes)</label>
+                {{ form.duration_minutes }}
+            </div>
+    
+            <button type="submit">Add Movie</button>
+        </form>
+    </div>
+    <hr>
+
+    {% for movie in movies %}
+        <article class="add-movies-container">
+            <h2>
+                <a href="{% url 'users:edit_movie' pk=movie.pk %}">
+                    {{ movie.title }} ({{ movie.year }})
+                </a>
+            </h2>
+            <p>Genre: {{ movie.genre }}</p>
+            <p>Duration: {{ movie.duration_minutes }} min</p>
+            
+        </article>
+    {% endfor %}
+</section>
+{% endblock %}

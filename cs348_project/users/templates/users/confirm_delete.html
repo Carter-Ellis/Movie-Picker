@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Confirm Delete
+{% endblock %}
+
+{% block content %}
+<section>
+    <h1 class="add-movies-container">Delete "{{ movie.title }}"?</h1>
+
+    <div class="add-movies-container">
+        <form method="post">
+            {% csrf_token %}
+
+            <p>Are you sure you want to permanently delete this movie?</p>
+
+            <div class="button-group">
+                <button type="submit" class="danger">Delete</button>
+                <a href="{% url 'users:edit_movie' pk=movie.pk %}" class="cancel-button">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
