@@ -12,10 +12,10 @@ class User(models.Model):
         return self.name
     
 class Movie(models.Model):
-    title = models.TextField()
-    genre = models.TextField()
-    year = models.IntegerField()
-    duration_minutes = models.IntegerField()
+    title = models.TextField(db_index=True)
+    genre = models.TextField(db_index=True)
+    year = models.IntegerField(db_index=True)
+    duration_minutes = models.IntegerField(db_index=True)
 
     def __str__(self):
         return f"{self.title} released: {self.year}"

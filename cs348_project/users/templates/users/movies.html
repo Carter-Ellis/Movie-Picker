@@ -5,10 +5,18 @@
 {% endblock %}
 
 {% block content %}
+
 <section>
-    <h1 class="add-movies-container">Movies</h1>
+    <div class="filter-button-wrapper">
+        <form action="{% url 'users:filter_movies' %}" method="get">
+            <button type="submit" class="filter-movie-button">🎯 Filter Movies</button>
+        </form>
+    </div>
+    <h1 class="add-movies-container">
+        Movies
+    </h1> 
     <div class="add-movies-container">
-        <form method="post" class="add-movies-form">  <!-- ⬅️ add this class -->
+        <form method="post" class="add-movies-form"> 
             {% csrf_token %}
             
             <div class="form-group1">

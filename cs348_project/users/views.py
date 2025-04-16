@@ -5,6 +5,7 @@ from django.contrib.auth import logout
 from .models import User
 from .models import Movie
 from .forms import MovieForm
+from django.db import connection
 
 # Create your views here.
 
@@ -79,3 +80,58 @@ def delete_movie(request, pk):
         movie.delete()
         return redirect('users:movies')
     return render(request, 'users/confirm_delete.html', { 'movie': movie })
+
+def filter_movies(request):
+    movies = []
+    genres = []
+
+    # Get distinct genres manually (no 'with' block)
+    cursor = connection.cursor()
+    try:
+        cursor.execute("SELECT DISTINCT genre FROM users_movie")
+        genres = [row[0] for row in cursor.fetchall()]
+    finally:
+        cursor.close()
+
+    if request.method == 'GET' and any(param in request.GET for param in ['genre', 'min_year', 'max_year', 'max_duration']):
+        genre = request.GET.get('genre')
+        min_year = request.GET.get('min_year')
+        max_year = request.GET.get('max_year')
+        max_duration = request.GET.get('max_duration')
+
+        conditions = []
+        params = []
+
+        if genre:
+            conditions.append("genre = %s")
+            params.append(genre)
+
+        if min_year and max_year:
+            conditions.append("year BETWEEN %s AND %s")
+            params.extend([min_year, max_year])
+        elif min_year:
+            conditions.append("year >= %s")
+            params.append(min_year)
+        elif max_year:
+            conditions.append("year <= %s")
+            params.append(max_year)
+
+        if max_duration:
+            conditions.append("duration_minutes <= %s")
+            params.append(max_duration)
+
+        where_clause = " AND ".join(conditions) if conditions else "1=1"
+        query = f"SELECT * FROM users_movie WHERE {where_clause}"
+
+        cursor = connection.cursor()
+        try:
+            cursor.execute(query, params)
+            columns = [col[0] for col in cursor.description]
+            movies = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        finally:
+            cursor.close()
+
+    return render(request, 'users/filter_movies.html', {
+        'genres': genres,
+        'movies': movies
+    })
